@@ -391,6 +391,19 @@ compute_correlation_from_table <- function(tab){
 }
 
 
+get_species_motif_presence <- function(dat){
+  # assumes data has columns 'species' and 'gmm_cluster'
+  # returns a dataframe of binary motif presence for each species
+
+  species <- unique(dat$species)
+  motif_presence <- data.frame(species = species, stringsAsFactors = FALSE)
+
+  for (i in unique(dat$gmm_cluster)){
+    motif_presence[[paste('motif_', i, sep='')]] <- as.integer(species %in% dat$species[dat$gmm_cluster == i])
+  }
+
+  return(motif_presence)
+}
 
 
 

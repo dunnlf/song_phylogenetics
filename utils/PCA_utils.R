@@ -7,18 +7,53 @@
 ##########################
 
 
-get_PCA_distance_matrix <- function(PCA_df, motif_inds){
+get_PCA_distance_matrix <- function(PCA_df, motif_inds, average_within_species=TRUE){
   # assumed PCA_df has final column for gmm cluster, and remaining are PCA components
+  # if average_within_species is TRUE, then distances are computed within each species, then averaged
+  # else distance taken between centroids of each motif within species having both motifs
   
-  PCA_means <- PCA_df[,c(1:(ncol(PCA_df)))] %>%
-    group_by(gmm_cluster) %>%
-    summarise_all(mean)
-  
-  PCA_means <- PCA_means[PCA_means$gmm_cluster %in% motif_inds,2:ncol(PCA_means)]
+  species_motifs <- get_species_motif_presence(PCA_df)
 
-  dist_PCA <- as.matrix(dist(PCA_means))
-  
-  print(PCA_means)
+  dist_PCA <- matrix(NA, nrow=length(motif_inds), ncol=length(motif_inds))
+  for (i in 1:length(motif_inds)){
+    for (j in 1:length(motif_inds)){
+      if (i == j){
+        dist_PCA[i,j] <- 0
+      } else {
+        # subset to only species having both motif i and motif j
+        species_ij = species_motifs[species_motifs[, paste('motif_', motif_inds[i], sep='')] == 1 &
+                                      species_motifs[, paste('motif_', motif_inds[j], sep='')] == 1,]
+        species_ij = species_ij$species
+
+        PCA_ij <- PCA_df[PCA_df$species %in% species_ij &
+                           PCA_df$gmm_cluster %in% c(motif_inds[i], motif_inds[j]),]
+        if (average_within_species){
+          dists_ij <- c()
+          for (s in species_ij){
+            PCA_s <- PCA_ij[PCA_ij$species == s,]
+            PCA_means_s <- PCA_s[, 2:ncol(PCA_s)] %>%
+              group_by(gmm_cluster) %>%
+              summarise_all(mean)
+
+            dist_ij <- dist(PCA_means_s[,2:ncol(PCA_means_s)])
+
+            dists_ij <- c(dists_ij, dist_ij)
+          }
+
+          dist_PCA[i,j] <- mean(dists_ij)
+          
+        } else {
+          PCA_means <- PCA_ij[, 2:ncol(PCA_ij)] %>%
+            group_by(gmm_cluster) %>%
+            summarise_all(mean)
+
+          dist_ij <- dist(PCA_means[,2:ncol(PCA_means)])
+
+          dist_PCA[i,j] <- dist_ij
+        }
+      }
+    }
+  }
   
   return(dist_PCA)
 }
