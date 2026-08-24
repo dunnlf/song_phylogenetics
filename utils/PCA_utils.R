@@ -61,7 +61,7 @@ get_PCA_distance_matrix <- function(PCA_df, motif_inds, average_within_species=T
 
 plot_PCA_centroids <- function(PCA_df, motif_inds,
                                main='Distribution of Motifs', cols=NULL,
-                               alpha=0.05){
+                               alpha=0.05, names=NULL){
   
   kdes = list()
   
@@ -111,8 +111,8 @@ plot_PCA_centroids <- function(PCA_df, motif_inds,
            bg=cols[[i]], col='black', cex=3)
   }
   
-  legend("topright", legend = motif_inds, col = cols, lty = 1, title='Motif',
-         cex=1.5)
+  legend("topright", legend = names,
+         col = cols, lty = 1, title='Motif', cex=1.5)
   title(main, cex.main=1.85)
 }
 

@@ -16,8 +16,8 @@ motif_names <- c("Flat whistles",
                   "Fast trills",
                   "Chaotic songs",
                   "Ultrafast trills",
-                  "Slow mod. songs",
-                  "Fast mod. songs",
+                  "Slow mod. whistles",
+                  "Fast mod. whistles",
                   "Harmonic stacks")
 
 
@@ -74,7 +74,8 @@ significant_motifs <- which(p_vals<0.05) - 1
 ### plotting recordings of motifs in PCA space
 
 pca_inds <- 17:(17+37)  # columns of PCA data and gmm cluster
-plot_PCA_centroids(data[,pca_inds], significant_motifs, main='Suboscine Motifs')
+plot_PCA_centroids(data[,pca_inds], significant_motifs, main='Suboscine Motifs',
+                   names=c('Flat Wh.', 'Slow Tr.', 'Fast Mod. Wh.', 'Harm. stacks'))
 
 
 ### plotting correlation estimates and PCA distance matrices
@@ -98,14 +99,18 @@ rownames(cov_mat) <- signif_motif_names
 colnames(cov_mat) <- signif_motif_names
 rownames(pca_mat) <- signif_motif_names
 colnames(pca_mat) <- signif_motif_names
+
+par(mar=c(0,0,0,0))
 corrplot(cov_mat, method='circle', type='upper', diag=FALSE, addCoef.col = 'black',
-         number.cex=1.75, cl.cex=1.2, tl.cex=1.75, tl.col='black', tl.srt=30,
-         title='Correlation estimates', mar=c(1,1,3.5,1), cex.main=2, col=COL2("RdBu", 200))
+         number.cex=1.25, cl.cex=1.25, tl.cex=1.25, tl.col='black', tl.srt=30,
+         title='Correlation estimates', mar=c(1,1,3.5,1), cex.main=1.5, col=COL2("RdBu", 200),
+         cl.align.text='l')
 
 corrplot(pca_mat, is.corr=FALSE, method='circle', type='upper', diag=FALSE, addCoef.col = 'black',
-         number.cex=1.75, cl.cex=1.2, tl.cex=1.75, tl.col='black', tl.srt=30,
+         number.cex=1.25, cl.cex=1.25, tl.cex=1.25, tl.col='black', tl.srt=30,
          col=colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu"))[c(2,3,5,9)])(200), col.lim=c(0,70),
-         title='PCA distances', mar=c(1,1,3.5,1), cex.main=2)
+         title='PCA distances', mar=c(1,1,3.5,1), cex.main=1.5,
+         cl.align.text='l')
 
 
 # confirm results with correlation and significance from Mk model of Pagel 1994

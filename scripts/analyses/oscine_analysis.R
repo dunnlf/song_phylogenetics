@@ -16,8 +16,8 @@ motif_names <- c("Flat whistles",
                   "Fast trills",
                   "Chaotic songs",
                   "Ultrafast trills",
-                  "Slow mod. songs",
-                  "Fast mod. songs",
+                  "Slow mod. whistles",
+                  "Fast mod. whistles",
                   "Harmonic stacks")
 
 # load utility functions
@@ -59,7 +59,8 @@ significant_motifs <- which(p_vals<0.05) - 1
 
 pca_inds <- 17:(17+37)  # columns of PCA data and gmm cluster
 plot_PCA_centroids(data[,pca_inds], significant_motifs, main='Oscine Motifs',
-                   cols=c(rainbow(4)[c(1,2)], 'grey50', rainbow(4)[3]))
+                   cols=c(rainbow(4)[c(1,2)], 'grey50', rainbow(4)[3]),
+                   names=c('Flat wh.', 'Slow tr.', 'Ultrafast tr.', 'Fast mod. wh.'))
 
 
 ### plotting correlation estimates and PCA distance matrices
@@ -85,13 +86,15 @@ colnames(cov_mat) <- signif_motif_names
 rownames(pca_mat) <- signif_motif_names
 colnames(pca_mat) <- signif_motif_names
 corrplot(cov_mat, method='circle', type='upper', diag=FALSE, addCoef.col = 'black',
-         number.cex=1.75, cl.cex=1.2, tl.cex=1.75, tl.col='black', tl.srt=30,
-         title='Correlation estimates', mar=c(1,1,3.5,1), cex.main=2, col=COL2("RdBu", 200))
+         number.cex=1.25, cl.cex=1.25, tl.cex=1.25, tl.col='black', tl.srt=30,
+         title='Correlation estimates', mar=c(1,1,3.5,1), cex.main=1.5, col=COL2("RdBu", 200),
+         cl.align.text='l')
 
 corrplot(pca_mat, is.corr=FALSE, method='circle', type='upper', diag=FALSE, addCoef.col = 'black',
-         number.cex=1.75, cl.cex=1.2, tl.cex=1.75, tl.col='black', tl.srt=30,
-         col=colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu"))[c(2,3,5,9)])(200), col.lim=c(0,85),
-         title='PCA distances', mar=c(1,1,3.5,1), cex.main=2)
+          number.cex=1.25, cl.cex=1.25, tl.cex=1.25, tl.col='black', tl.srt=30,
+         col=colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu"))[c(2,3,5,9)])(200), col.lim=c(0,90),
+         title='PCA distances', mar=c(1,1,3.5,1), cex.main=1.5,
+         cl.align.text='l')
 
 
 
