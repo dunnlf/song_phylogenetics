@@ -1,7 +1,7 @@
 ##########################
 #
 #
-# run MCMC / marginal likelihood via RevBayes
+# run univariate MCMC / marginal likelihood via RevBayes
 #
 #
 ##########################
